@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>TokStudio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--pink:#FF006E;--cyan:#00D4FF;--bg:#000;--s1:#0a0a0a;--s2:#111;--s3:#1a1a1a;--glass:rgba(15,15,15,0.85);--ease:cubic-bezier(0.2,0,0,1);--txt1:#fff;--txt2:#aaa;--txt3:#555}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt1);font-family:system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Space Grotesk',system-ui,sans-serif}
+::-webkit-scrollbar{display:none}
+*{scrollbar-width:none}
+
+/* App Shell */
+#app{width:100%;height:100dvh;height:100vh;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;bottom:60px;display:none;opacity:0;transition:opacity .3s var(--ease)}
+.screen.active{display:block;opacity:1}
+
+/* FEED */
+#feed-screen{overflow:hidden}
+.feed-container{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch}
+.video-card{height:100%;width:100%;scroll-snap-align:start;position:relative;flex-shrink:0;overflow:hidden}
+.video-card .bg{position:absolute;inset:0}
+.video-card .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;background:rgba(255,255,255,0.15);backdrop-filter:blur(20px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;animation:pulse 2s ease infinite;cursor:pointer}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.7}50%{transform:translate(-50%,-50%) scale(1.08);opacity:1}}
+
+/* Video overlay info */
+.video-info{position:absolute;bottom:80px;left:16px;right:70px;z-index:2}
+.video-info .username{font-weight:700;font-size:17px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.video-info .username .follow-btn{font-size:12px;background:var(--pink);color:#fff;padding:2px 10px;border-radius:4px;font-weight:600;cursor:pointer}
+.video-info .desc{font-size:14px;color:rgba(255,255,255,.9);margin-bottom:6px;line-height:1.4}
+.video-info .hashtags{font-size:14px;font-weight:600;color:var(--cyan);margin-bottom:8px}
+.video-info .music{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.8);overflow:hidden;white-space:nowrap}
+.video-info .music .marquee{display:inline-block;animation:marquee 8s linear infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.music-icon{font-size:14px}
+
+/* Action column */
+.actions{position:absolute;right:12px;bottom:90px;display:flex;flex-direction:column;align-items:center;gap:20px;z-index:2}
+.action-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.action-item .icon{font-size:28px;transition:transform .3s var(--ease)}
+.action-item .count{font-size:12px;color:rgba(255,255,255,.85);font-weight:500}
+.action-item.liked .icon{color:var(--pink)}
+.action-item .avatar-action{width:44px;height:44px;border-radius:50%;background:var(--s2);border:2px solid #fff;position:relative;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;overflow:visible}
+.action-item .avatar-action .plus{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:20px;height:20px;background:var(--pink);border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;font-weight:400;line-height:1}
+
+/* Music disc */
+.music-disc{position:absolute;right:12px;bottom:76px;width:40px;height:40px;border-radius:50%;background:var(--s2);border:2px solid var(--txt3);animation:spin 3s linear infinite;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.music-disc::after{content:'';width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--txt3)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Double tap heart */
+.double-tap-heart{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:100px;pointer-events:none;z-index:10;filter:drop-shadow(0 0 20px rgba(255,0,110,.5))}
+.double-tap-heart.show{animation:heartPop .8s var(--ease) forwards}
+@keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1}50%{transform:translate(-50%,-50%) scale(1.2);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+
+/* TAB BAR */
+.tab-bar{position:absolute;bottom:0;left:0;right:0;height:60px;background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);display:flex;align-items:center;justify-content:space-around;z-index:100;padding-bottom:env(safe-area-inset-bottom);border-top:1px solid rgba(255,255,255,.06)}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:44px;min-height:44px;justify-content:center;position:relative;-webkit-tap-highlight-color:transparent}
+.tab-item .tab-icon{font-size:24px;opacity:.5;transition:all .3s var(--ease)}
+.tab-item .tab-label{font-size:10px;color:var(--txt3);transition:color .3s var(--ease)}
+.tab-item.active .tab-icon{opacity:1}
+.tab-item.active .tab-label{color:var(--txt1)}
+.tab-item.create-tab{position:relative}
+.tab-item.create-tab .create-btn{width:48px;height:32px;background:var(--pink);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;box-shadow:0 4px 20px rgba(255,0,110,.4);transition:transform .3s var(--ease)}
+.tab-item.create-tab:active .create-btn{transform:scale(.9)}
+
+/* COMMENTS SHEET */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+.overlay.open{opacity:1;pointer-events:auto}
+.comments-sheet{position:fixed;bottom:0;left:0;right:0;height:60vh;background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-radius:28px 28px 0 0;z-index:201;transform:translateY(100%);transition:transform .4s var(--ease)}
+.comments-sheet.open{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--txt3);border-radius:2px;margin:10px auto 0}
+.sheet-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sheet-header h3{font-size:16px;font-weight:600}
+.sheet-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border-radius:50%;background:var(--s3)}
+.comments-list{overflow-y:auto;height:calc(100% - 130px);padding:12px 20px}
+.comment{display:flex;gap:12px;margin-bottom:20px}
+.comment .c-avatar{width:32px;height:32px;border-radius:50%;background:var(--s3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.comment .c-body{flex:1}
+.comment .c-name{font-weight:600;font-size:13px;margin-bottom:3px}
+.comment .c-text{font-size:14px;color:rgba(255,255,255,.85);line-height:1.4;margin-bottom:4px}
+.comment .c-meta{font-size:12px;color:var(--txt3);display:flex;gap:12px;align-items:center}
+.comment .c-like{cursor:pointer;font-size:14px}
+.comment-input-area{position:absolute;bottom:0;left:0;right:0;padding:12px 16px;display:flex;gap:10px;align-items:center;background:var(--s1);border-top:1px solid rgba(255,255,255,.06)}
+.comment-input-area input{flex:1;height:40px;border:none;background:var(--s3);border-radius:20px;padding:0 16px;color:#fff;font-size:14px;outline:none}
+.comment-input-area input::placeholder{color:var(--txt3)}
+.comment-input-area .emoji-btn,.comment-input-area .send-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border-radius:50%;flex-shrink:0}
+.send-btn{background:var(--pink);font-size:16px!important}
+
+/* DISCOVER */
+#discover-screen{overflow-y:auto;padding-bottom:20px}
+.search-bar{margin:16px;height:44px;background:var(--glass);backdrop-filter:blur(20px);border-radius:12px;display:flex;align-items:center;padding:0 16px;gap:10px;border:1px solid rgba(255,255,255,.06)}
+.search-bar .s-icon{font-size:18px;color:var(--txt3)}
+.search-bar input{flex:1;background:none;border:none;color:#fff;font-size:15px;outline:none}
+.search-bar input::placeholder{color:var(--txt3)}
+.section-title{font-family:'Space Grotesk',system-ui;font-size:20px;font-weight:700;padding:20px 16px 12px}
+.hashtag-scroll{display:flex;gap:10px;padding:0 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hashtag-pill{flex-shrink:0;padding:8px 18px;background:var(--s2);border-radius:20px;font-size:14px;font-weight:500;color:var(--txt1);cursor:pointer;border:1px solid rgba(255,255,255,.08);transition:all .3s var(--ease)}
+.hashtag-pill:active{background:var(--pink);border-color:var(--pink)}
+.discover-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:20px 16px}
+.discover-item{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:3/4}
+.discover-item .bg{position:absolute;inset:0;border-radius:12px}
+.discover-item .d-info{position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+.discover-item .d-title{font-size:13px;font-weight:600;line-height:1.3}
+.discover-item .d-views{font-size:11px;color:var(--txt2);margin-top:3px}
+
+/* INBOX */
+#inbox-screen{overflow-y:auto}
+.inbox-header{padding:20px 16px 12px;font-family:'Space Grotesk',system-ui;font-size:22px;font-weight:700}
+.inbox-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.06);padding:0 16px}
+.inbox-tab{padding:12px 20px;font-size:14px;font-weight:500;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;transition:all .3s var(--ease)}
+.inbox-tab.active{color:#fff;border-bottom-color:var(--pink)}
+.inbox-list{padding:8px 0}
+.inbox-item{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer}
+.inbox-item .i-avatar{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600}
+.inbox-item .i-body{flex:1}
+.inbox-item .i-name{font-weight:600;font-size:15px;margin-bottom:3px}
+.inbox-item .i-msg{font-size:13px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inbox-item .i-time{font-size:11px;color:var(--txt3);flex-shrink:0}
+.inbox-item .i-dot{width:8px;height:8px;border-radius:50%;background:var(--pink);flex-shrink:0}
+
+/* PROFILE */
+#profile-screen{overflow-y:auto}
+.profile-header{display:flex;align-items:center;justify-content:space-between;padding:16px}
+.profile-header .back{font-size:22px;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.profile-header .p-username{font-family:'Space Grotesk',system-ui;font-weight:700;font-size:18px}
+.profile-header .more{font-size:22px;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.profile-avatar-wrap{display:flex;justify-content:center;padding:10px 0 16px}
+.profile-avatar{width:88px;height:88px;border-radius:50%;padding:3px;background:linear-gradient(135deg,var(--pink),var(--cyan));display:flex;align-items:center;justify-content:center}
+.profile-avatar .inner{width:100%;height:100%;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;border:3px solid var(--bg)}
+.profile-name{text-align:center;font-size:15px;color:var(--txt2);margin-bottom:8px}
+.profile-bio{text-align:center;font-size:14px;color:var(--txt2);padding:0 40px;margin-bottom:16px;line-height:1.4}
+.profile-stats{display:flex;justify-content:center;gap:32px;margin-bottom:20px}
+.stat{text-align:center}
+.stat .num{font-weight:700;font-size:18px;font-family:'Space Grotesk',system-ui}
+.stat .lbl{font-size:12px;color:var(--txt3);margin-top:2px}
+.profile-actions{display:flex;justify-content:center;gap:10px;margin-bottom:20px;padding:0 16px}
+.edit-btn{flex:1;max-width:200px;height:40px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:transparent;color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s var(--ease)}
+.edit-btn:active{background:rgba(255,255,255,.1)}
+.share-btn{width:40px;height:40px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+.profile-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06)}
+.p-tab{flex:1;padding:14px 0;text-align:center;font-size:20px;cursor:pointer;position:relative;color:var(--txt3);transition:color .3s var(--ease)}
+.p-tab.active{color:#fff}
+.p-tab.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:#fff;border-radius:1px}
+.video-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;padding:2px}
+.grid-item{aspect-ratio:9/16;position:relative;overflow:hidden}
+.grid-item .bg{position:absolute;inset:0}
+.grid-item .views{position:absolute;bottom:6px;left:8px;font-size:12px;display:flex;align-items:center;gap:4px;font-weight:500}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- FEED -->
+  <div id="feed-screen" class="screen active">
+    <div class="feed-container" id="feedContainer"></div>
+  </div>
+
+  <!-- DISCOVER -->
+  <div id="discover-screen" class="screen">
+    <div class="search-bar"><span class="s-icon">🔍</span><input placeholder="Search"></div>
+    <div class="section-title">Trending</div>
+    <div class="hashtag-scroll">
+      <div class="hashtag-pill">#dance</div><div class="hashtag-pill">#funny</div><div class="hashtag-pill">#cooking</div><div class="hashtag-pill">#fitness</div><div class="hashtag-pill">#travel</div><div class="hashtag-pill">#music</div><div class="hashtag-pill">#art</div><div class="hashtag-pill">#comedy</div><div class="hashtag-pill">#pets</div>
+    </div>
+    <div class="section-title">For You</div>
+    <div class="discover-grid" id="discoverGrid"></div>
+  </div>
+
+  <!-- INBOX -->
+  <div id="inbox-screen" class="screen">
+    <div class="inbox-header">Inbox</div>
+    <div class="inbox-tabs">
+      <div class="inbox-tab active">All Activity</div>
+      <div class="inbox-tab">Mentions</div>
+    </div>
+    <div class="inbox-list" id="inboxList"></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profile-screen" class="screen">
+    <div class="profile-header">
+      <div class="back">←</div>
+      <div class="p-username">@sophia.creates</div>
+      <div class="more">⋮</div>
+    </div>
+    <div class="profile-avatar-wrap"><div class="profile-avatar"><div class="inner">S</div></div></div>
+    <div class="profile-name">@sophia.creates</div>
+    <div class="profile-bio">✨ Creating magic daily | 📸 Photographer & storyteller | 🌍 Based in Vienna</div>
+    <div class="profile-stats">
+      <div class="stat"><div class="num">234</div><div class="lbl">Following</div></div>
+      <div class="stat"><div class="num">12.5K</div><div class="lbl">Followers</div></div>
+      <div class="stat"><div class="num">89.2K</div><div class="lbl">Likes</div></div>
+    </div>
+    <div class="profile-actions">
+      <button class="edit-btn">Edit Profile</button>
+      <button class="share-btn">↗</button>
+    </div>
+    <div class="profile-tabs">
+      <div class="p-tab active">📹</div>
+      <div class="p-tab">❤️</div>
+      <div class="p-tab">🔖</div>
+    </div>
+    <div class="video-grid" id="profileGrid"></div>
+  </div>
+
+  <!-- COMMENTS OVERLAY -->
+  <div class="overlay" id="commentsOverlay"></div>
+  <div class="comments-sheet" id="commentsSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header"><h3>1,247 Comments</h3><div class="sheet-close" id="closeComments">✕</div></div>
+    <div class="comments-list" id="commentsList"></div>
+    <div class="comment-input-area">
+      <input placeholder="Add comment...">
+      <div class="emoji-btn">😊</div>
+      <div class="send-btn">➤</div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <div class="tab-item active" data-tab="feed"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></div>
+    <div class="tab-item" data-tab="discover"><div class="tab-icon">🔍</div><div class="tab-label">Discover</div></div>
+    <div class="tab-item create-tab" data-tab="create"><div class="create-btn">+</div></div>
+    <div class="tab-item" data-tab="inbox"><div class="tab-icon">💬</div><div class="tab-label">Inbox</div></div>
+    <div class="tab-item" data-tab="profile"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></div>
+  </div>
+</div>
+
+<script>
+const feedData = [
+  {grad:'linear-gradient(135deg,#1a0030,#0a1628,#0d2233)',user:'@sophia.creates',desc:'POV: when the sunset hits different 🌅',tags:'#aesthetic #golden #vibes',music:'David Kushner — Daylight',likes:'847K',comments:'2,847',shares:'Share',bookmarks:'12.3K',initial:'S',color:'#FF006E'},
+  {grad:'linear-gradient(135deg,#2d1b4e,#1a3a5c)',user:'@alex.moves',desc:'Hit this choreo first try 🔥💃',tags:'#dance #trending #fyp',music:'Doja Cat — Paint The Town Red',likes:'1.2M',comments:'8,432',shares:'Share',bookmarks:'45.1K',initial:'A',color:'#00D4FF'},
+  {grad:'linear-gradient(135deg,#0a2e1f,#1a3a2e,#0d3333)',user:'@chef.marco',desc:'The secret to perfect pasta 🍝',tags:'#cooking #foodie #recipe',music:'Original Sound — chef.marco',likes:'324K',comments:'5,102',shares:'Share',bookmarks:'28.7K',initial:'M',color:'#22cc88'},
+  {grad:'linear-gradient(135deg,#3d1a1a,#4a2040)',user:'@luna.art',desc:'3 hours compressed into 30 seconds ✨🎨',tags:'#art #painting #satisfying',music:'Hozier — Too Sweet',likes:'562K',comments:'3,891',shares:'Share',bookmarks:'67.3K',initial:'L',color:'#ff6b9d'},
+  {grad:'linear-gradient(135deg,#1a1a3d,#0a2840,#1a3a3a)',user:'@fit.jake',desc:'30-day transformation results 💪',tags:'#fitness #gym #motivation',music:'Eminem — Lose Yourself',likes:'2.1M',comments:'12.5K',shares:'Share',bookmarks:'89.4K',initial:'J',color:'#ffaa00'},
+];
+
+const comments = [
+  {name:'@emma.wilson',text:'This is absolutely incredible! 🔥🔥',time:'2h',initial:'E',color:'#ff6b9d'},
+  {name:'@jake.smith',text:'How do you do this?? Tutorial please!',time:'3h',initial:'J',color:'#00D4FF'},
+  {name:'@maria.garcia',text:'Best content on TokStudio fr fr 💯',time:'4h',initial:'M',color:'#22cc88'},
+  {name:'@david.chen',text:'The vibes are immaculate ✨',time:'5h',initial:'D',color:'#ffaa00'},
+  {name:'@sarah.jones',text:'I\'ve watched this 50 times no lie',time:'6h',initial:'S',color:'#FF006E'},
+  {name:'@alex.kim',text:'Song name?? 🎵',time:'7h',initial:'A',color:'#9b59b6'},
+  {name:'@lisa.wang',text:'POV: you can\'t stop scrolling back to this',time:'8h',initial:'L',color:'#e74c3c'},
+  {name:'@tom.brown',text:'Followed immediately 🙌',time:'9h',initial:'T',color:'#3498db'},
+  {name:'@nina.patel',text:'This made my whole day better',time:'10h',initial:'N',color:'#1abc9c'},
+  {name:'@chris.lee',text:'The editing is next level wow',time:'12h',initial:'C',color:'#e67e22'},
+];
+
+const inboxData = [
+  {name:'emma.wilson',msg:'liked your video',time:'2m',initial:'E',color:'#ff6b9d',unread:true},
+  {name:'jake.smith',msg:'started following you',time:'15m',initial:'J',color:'#00D4FF',unread:true},
+  {name:'maria.garcia',msg:'commented: Best content! 🔥',time:'1h',initial:'M',color:'#22cc88',unread:false},
+  {name:'david.chen',msg:'shared your video',time:'2h',initial:'D',color:'#ffaa00',unread:false},
+  {name:'sarah.jones',msg:'liked your comment',time:'4h',initial:'S',color:'#FF006E',unread:false},
+  {name:'alex.kim',msg:'mentioned you in a comment',time:'6h',initial:'A',color:'#9b59b6',unread:false},
+];
+
+const discoverData = [
+  {grad:'linear-gradient(135deg,#4a1942,#2d1b69)',title:'Viral dance challenge 💃',views:'2.4M'},
+  {grad:'linear-gradient(135deg,#0d3b66,#1a5276)',title:'Life hack you NEED',views:'1.8M'},
+  {grad:'linear-gradient(135deg,#1a472a,#2d6a4f)',title:'Cooking in 60 seconds',views:'956K'},
+  {grad:'linear-gradient(135deg,#5c2018,#8b3a2a)',title:'Sunset timelapse 🌅',views:'3.1M'},
+  {grad:'linear-gradient(135deg,#2c1810,#4a2c20)',title:'Pet does something crazy',views:'4.2M'},
+  {grad:'linear-gradient(135deg,#1a1a4e,#2e2e6e)',title:'Art process reveal ✨',views:'1.1M'},
+];
+
+const gridGrads = [
+  'linear-gradient(135deg,#2d1b4e,#1a3a5c)','linear-gradient(135deg,#1a0030,#0d2233)',
+  'linear-gradient(135deg,#0a2e1f,#0d3333)','linear-gradient(135deg,#3d1a1a,#4a2040)',
+  'linear-gradient(135deg,#1a1a3d,#1a3a3a)','linear-gradient(135deg,#4a1942,#2d1b69)',
+  'linear-gradient(135deg,#0d3b66,#1a5276)','linear-gradient(135deg,#1a472a,#2d6a4f)',
+  'linear-gradient(135deg,#5c2018,#8b3a2a)',
+];
+const gridViews = ['1.2M','845K','2.3M','567K','1.8M','934K','3.1M','456K','2.7M'];
+
+// Build feed
+const fc = document.getElementById('feedContainer');
+feedData.forEach((v,i) => {
+  fc.innerHTML += `<div class="video-card" data-index="${i}">
+    <div class="bg" style="background:${v.grad}"></div>
+    <div class="play-btn">▶</div>
+    <div class="double-tap-heart" id="dth-${i}">❤️</div>
+    <div class="video-info">
+      <div class="username">${v.user} <span class="follow-btn">Follow</span></div>
+      <div class="desc">${v.desc}</div>
+      <div class="hashtags">${v.tags}</div>
+      <div class="music"><span class="music-icon">♫</span> <span class="marquee">${v.music}  •  ${v.music}</span></div>
+    </div>
+    <div class="actions">
+      <div class="action-item"><div class="avatar-action" style="background:${v.color}">${v.initial}<div class="plus">+</div></div></div>
+      <div class="action-item heart-action" data-index="${i}"><div class="icon">♡</div><div class="count">${v.likes}</div></div>
+      <div class="action-item comment-action"><div class="icon">💬</div><div class="count">${v.comments}</div></div>
+      <div class="action-item"><div class="icon">↗</div><div class="count">${v.shares}</div></div>
+      <div class="action-item"><div class="icon">🔖</div><div class="count">${v.bookmarks}</div></div>
+    </div>
+    <div class="music-disc" style="background:${v.grad}"></div>
+  </div>`;
+});
+
+// Build comments
+const cl = document.getElementById('commentsList');
+comments.forEach(c => {
+  cl.innerHTML += `<div class="comment"><div class="c-avatar" style="background:${c.color}">${c.initial}</div><div class="c-body"><div class="c-name">${c.name}</div><div class="c-text">${c.text}</div><div class="c-meta"><span>${c.time}</span><span>Reply</span><span class="c-like">♡</span></div></div></div>`;
+});
+
+// Build discover
+const dg = document.getElementById('discoverGrid');
+discoverData.forEach(d => {
+  dg.innerHTML += `<div class="discover-item"><div class="bg" style="background:${d.grad}"></div><div class="d-info"><div class="d-title">${d.title}</div><div class="d-views">▶ ${d.views}</div></div></div>`;
+});
+
+// Build inbox
+const il = document.getElementById('inboxList');
+inboxData.forEach(d => {
+  il.innerHTML += `<div class="inbox-item"><div class="i-avatar" style="background:${d.color}">${d.initial}</div><div class="i-body"><div class="i-name">${d.name}</div><div class="i-msg">${d.msg}</div></div><span class="i-time">${d.time}</span>${d.unread?'<div class="i-dot"></div>':''}</div>`;
+});
+
+// Build profile grid
+const pg = document.getElementById('profileGrid');
+for(let i=0;i<9;i++){
+  pg.innerHTML += `<div class="grid-item"><div class="bg" style="background:${gridGrads[i]}"></div><div class="views">▶ ${gridViews[i]}</div></div>`;
+}
+
+// Tab switching
+const tabs = document.querySelectorAll('.tab-item');
+const screens = {feed:'feed-screen',discover:'discover-screen',inbox:'inbox-screen',profile:'profile-screen'};
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.dataset.tab;
+    if(target === 'create') return;
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(screens[target]);
+    if(el) el.classList.add('active');
+  });
+});
+
+// Profile tabs
+document.querySelectorAll('.p-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.p-tab').forEach(p => p.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+
+// Comments sheet
+document.querySelectorAll('.comment-action').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('commentsOverlay').classList.add('open');
+    document.getElementById('commentsSheet').classList.add('open');
+  });
+});
+document.getElementById('closeComments').addEventListener('click', closeComments);
+document.getElementById('commentsOverlay').addEventListener('click', closeComments);
+function closeComments(){
+  document.getElementById('commentsOverlay').classList.remove('open');
+  document.getElementById('commentsSheet').classList.remove('open');
+}
+
+// Like animation
+document.querySelectorAll('.heart-action').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const icon = btn.querySelector('.icon');
+    const isLiked = btn.classList.toggle('liked');
+    icon.textContent = isLiked ? '❤️' : '♡';
+    icon.style.transform = 'scale(1.4)';
+    setTimeout(() => icon.style.transform = 'scale(1)', 300);
+  });
+});
+
+// Double tap heart
+let lastTap = 0;
+document.querySelectorAll('.video-card').forEach(card => {
+  card.addEventListener('click', (e) => {
+    if(e.target.closest('.actions') || e.target.closest('.video-info') || e.target.closest('.play-btn')) return;
+    const now = Date.now();
+    if(now - lastTap < 300){
+      const h = card.querySelector('.double-tap-heart');
+      h.classList.remove('show');
+      void h.offsetWidth;
+      h.classList.add('show');
+      const heart = card.querySelector('.heart-action');
+      if(heart && !heart.classList.contains('liked')){
+        heart.classList.add('liked');
+        heart.querySelector('.icon').textContent = '❤️';
+      }
+    }
+    lastTap = now;
+  });
+});
+
+// Touch drag for comments sheet
+let startY = 0;
+const sheet = document.getElementById('commentsSheet');
+sheet.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
+sheet.addEventListener('touchmove', e => {
+  const dy = e.touches[0].clientY - startY;
+  if(dy > 0) sheet.style.transform = `translateY(${dy}px)`;
+});
+sheet.addEventListener('touchend', e => {
+  const dy = e.changedTouches[0].clientY - startY;
+  if(dy > 100) closeComments();
+  sheet.style.transform = '';
+});
+</script>
+</body>
+</html>

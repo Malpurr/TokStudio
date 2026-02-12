@@ -1,0 +1,4 @@
+target/
+mobile/gen/
+*.apk
+.cargo/

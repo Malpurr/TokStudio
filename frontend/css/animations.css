@@ -1,0 +1,166 @@
+/* ===== TokStudio Animations ===== */
+
+:root {
+    --spring: cubic-bezier(0.2, 0, 0, 1);
+    --spring-bouncy: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Like heart burst */
+@keyframes like-burst {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.4); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+.action-btn.liked .action-icon {
+    animation: like-burst 0.5s var(--spring-bouncy);
+}
+
+/* Music ticker scroll */
+@keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.music-name {
+    animation: ticker-scroll 8s linear infinite;
+}
+
+/* Spinning disc */
+@keyframes spin-disc {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.music-disc {
+    animation: spin-disc 4s linear infinite;
+}
+
+/* Fade in up */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fade-in-up 0.6s var(--spring) forwards;
+}
+
+/* Scale in */
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.scale-in {
+    animation: scale-in 0.4s var(--spring) forwards;
+}
+
+/* Slide in from right */
+@keyframes slide-in-right {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.slide-in-right {
+    animation: slide-in-right 0.5s var(--spring) forwards;
+}
+
+/* Double-tap heart */
+@keyframes double-tap-heart {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    15% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    30% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.4);
+    }
+}
+
+.double-tap-heart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 80px;
+    pointer-events: none;
+    z-index: 10;
+    animation: double-tap-heart 1s var(--spring) forwards;
+}
+
+/* Pulse for loading */
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+.pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Nav item tap */
+.nav-item:active {
+    transform: scale(0.9);
+    transition: transform 0.15s var(--spring);
+}
+
+/* Video snap transition */
+.video-item {
+    transition: opacity 0.3s var(--spring);
+}
+
+.video-item:not(.active) {
+    opacity: 0.7;
+}
+
+.video-item.active {
+    opacity: 1;
+}
+
+/* Follow button */
+@keyframes follow-pop {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.3); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+.follow-badge.just-followed {
+    animation: follow-pop 0.4s var(--spring-bouncy);
+    background: var(--success, #34C759);
+}
+
+/* Shimmer loading */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}

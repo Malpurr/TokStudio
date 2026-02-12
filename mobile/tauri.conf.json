@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicholastmosher/tauri/v2/crates/tauri-cli/schema.json",
+  "productName": "TokStudio",
+  "identifier": "com.tokstudio.app",
+  "version": "0.1.0",
+  "build": {
+    "frontendDist": "../frontend",
+    "devUrl": "http://localhost:1420"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "TokStudio",
+        "width": 390,
+        "height": 844,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": []
+  }
+}

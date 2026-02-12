@@ -1,0 +1,22 @@
+[package]
+name = "tokstudio-mobile"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "tokstudio_mobile_lib"
+crate-type = ["staticlib", "cdylib", "lib"]
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tokstudio-shared = { path = "../shared" }
+serde.workspace = true
+serde_json.workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[profile.release]
+codegen-units = 1
+lto = false
+opt-level = "s"
