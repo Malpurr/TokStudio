@@ -15,6 +15,9 @@ const App = {
     this.initSheets();
     this.initStoryViewer();
     this.initSettingsSubScreens();
+    this.initProfileBack();
+    this.initProfileShare();
+    this.initNewMessage();
   },
 
   // ===== NAVIGATION =====
@@ -30,7 +33,6 @@ const App = {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     const target = document.getElementById(`screen-${screen}`);
     target.classList.add('active');
-    // Stagger entry animation
     this.staggerScreen(target);
     document.querySelectorAll('#bottom-nav [data-screen]').forEach(b => {
       b.classList.toggle('active', b.dataset.screen === screen);
@@ -43,7 +45,7 @@ const App = {
     const items = el.querySelectorAll('.stagger-item');
     items.forEach((item, i) => {
       item.style.animation = 'none';
-      item.offsetHeight; // reflow
+      item.offsetHeight;
       item.style.animation = '';
       item.style.animationDelay = `${i * 50}ms`;
     });
@@ -62,8 +64,8 @@ const App = {
   // ===== DISCOVER =====
   initDiscover() {
     const tags = [
-      {l:'🔥 Tendance',a:true},{l:'Danse'},{l:'Comédie'},{l:'Gaming'},
-      {l:'Cuisine'},{l:'Mode'},{l:'Musique'},{l:'Art'},{l:'Tech'},{l:'Voyage'}
+      {l:'🔥 Trending',a:true},{l:'Dance'},{l:'Comedy'},{l:'Gaming'},
+      {l:'Cooking'},{l:'Fashion'},{l:'Music'},{l:'Art'},{l:'Tech'},{l:'Travel'}
     ];
     const tagsEl = document.getElementById('trending-tags');
     tags.forEach(t => {
@@ -102,7 +104,6 @@ const App = {
         <div class="thumb-overlay"><div class="thumb-views">
           <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>${views[i]}
         </div></div>`;
-      // Tap opens video in fullscreen feed
       item.addEventListener('click', () => {
         this.navigate('home');
         const feed = document.getElementById('video-feed');
@@ -117,7 +118,6 @@ const App = {
 
   // ===== MESSAGES =====
   initMessages() {
-    // Message tabs
     document.querySelectorAll('.messages-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.messages-tab').forEach(t => t.classList.remove('active'));
@@ -131,7 +131,7 @@ const App = {
 
     // Stories
     const stories = [
-      {name:'Toi',initial:'M',ring:false},
+      {name:'You',initial:'M',ring:false},
       {name:'sophia_art',initial:'S',ring:true},
       {name:'alex.dev',initial:'A',ring:true},
       {name:'luna',initial:'L',ring:true},
@@ -157,14 +157,14 @@ const App = {
 
     // Chat list
     this.chats = [
-      {name:'sophia_art',initial:'S',msg:'Trop beau ton dernier post! 😍','time':'2m',unread:2},
-      {name:'alex.dev',initial:'A',msg:'Le code est prêt, check le repo','time':'15m',unread:1},
-      {name:'luna.creates',initial:'L',msg:'On fait un collab?','time':'1h',unread:0},
-      {name:'marcox',initial:'M',msg:'Merci pour le follow!','time':'3h',unread:0},
-      {name:'design.daily',initial:'D',msg:'Incroyable le design 🔥','time':'5h',unread:0},
-      {name:'jay_music',initial:'J',msg:'Le beat est ready','time':'8h',unread:0},
-      {name:'emma.vibes',initial:'E',msg:'Tu as vu la dernière trend?','time':'1j',unread:0},
-      {name:'neon.dreams',initial:'N',msg:'Photo envoyée','time':'2j',unread:0},
+      {name:'sophia_art',initial:'S',msg:'Your last post is so beautiful! 😍','time':'2m',unread:2},
+      {name:'alex.dev',initial:'A',msg:'The code is ready, check the repo','time':'15m',unread:1},
+      {name:'luna.creates',initial:'L',msg:'Want to do a collab?','time':'1h',unread:0},
+      {name:'marcox',initial:'M',msg:'Thanks for the follow!','time':'3h',unread:0},
+      {name:'design.daily',initial:'D',msg:'Amazing design 🔥','time':'5h',unread:0},
+      {name:'jay_music',initial:'J',msg:'The beat is ready','time':'8h',unread:0},
+      {name:'emma.vibes',initial:'E',msg:'Have you seen the latest trend?','time':'1d',unread:0},
+      {name:'neon.dreams',initial:'N',msg:'Photo sent','time':'2d',unread:0},
     ];
     this.renderChatList();
 
@@ -187,7 +187,7 @@ const App = {
       el.innerHTML = `
         <div class="chat-swipe-actions">
           <button class="chat-swipe-btn archive-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 8-2-3H5L3 8"/><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M10 12h4"/></svg>Archive</button>
-          <button class="chat-swipe-btn delete-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Suppr.</button>
+          <button class="chat-swipe-btn delete-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Delete</button>
         </div>
         <div class="chat-item-content">
           <div class="chat-avatar">${c.initial}</div>
@@ -200,9 +200,7 @@ const App = {
             ${c.unread ? `<div class="chat-unread">${c.unread}</div>` : ''}
           </div>
         </div>`;
-      // Swipe gesture
       this.initSwipeGesture(el);
-      // Tap to open chat
       el.querySelector('.chat-item-content').addEventListener('click', () => this.openChat(c));
       chatList.appendChild(el);
     });
@@ -239,7 +237,6 @@ const App = {
       }
     });
 
-    // Close swipe on tap elsewhere
     el.querySelectorAll('.chat-swipe-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         content.style.transition = 'transform 0.3s var(--ease)';
@@ -254,12 +251,12 @@ const App = {
     document.getElementById('chat-name').textContent = chat.name;
     const msgs = document.getElementById('chat-messages');
     const conv = [
-      {text:'Salut! Comment ça va? 😊',sent:false,time:'14:20'},
-      {text:'Hey! Ça va super bien, et toi?',sent:true,time:'14:21'},
-      {text:'Trop bien! J\'ai vu ta dernière vidéo',sent:false,time:'14:22'},
-      {text:'Elle est incroyable 🔥',sent:false,time:'14:22'},
-      {text:'Merci beaucoup! Ça m\'a pris 3 heures 😅',sent:true,time:'14:25'},
-      {text:chat.msg,sent:false,time:'maintenant'},
+      {text:'Hey! How are you? 😊',sent:false,time:'14:20'},
+      {text:'Hey! I\'m doing great, and you?',sent:true,time:'14:21'},
+      {text:'Great! I saw your latest video',sent:false,time:'14:22'},
+      {text:'It\'s incredible 🔥',sent:false,time:'14:22'},
+      {text:'Thank you so much! It took me 3 hours 😅',sent:true,time:'14:25'},
+      {text:chat.msg,sent:false,time:'now'},
     ];
     msgs.innerHTML = '';
     conv.forEach(m => {
@@ -294,13 +291,12 @@ const App = {
     msgs.appendChild(bubble);
     const time = document.createElement('div');
     time.className = 'chat-bubble-time sent-time';
-    time.textContent = 'maintenant';
+    time.textContent = 'now';
     msgs.appendChild(time);
     input.value = '';
     msgs.scrollTop = msgs.scrollHeight;
-    // Auto reply after 1s
     setTimeout(() => {
-      const replies = ['Super! 😊', 'Ah oui je vois!', 'Trop bien 🔥', 'Haha 😂', 'D\'accord!', 'Merci! 💕'];
+      const replies = ['Awesome! 😊', 'Oh I see!', 'So cool 🔥', 'Haha 😂', 'Got it!', 'Thanks! 💕'];
       const reply = document.createElement('div');
       reply.className = 'chat-bubble received';
       reply.textContent = replies[Math.floor(Math.random() * replies.length)];
@@ -308,34 +304,45 @@ const App = {
       msgs.appendChild(reply);
       const rt = document.createElement('div');
       rt.className = 'chat-bubble-time';
-      rt.textContent = 'maintenant';
+      rt.textContent = 'now';
       msgs.appendChild(rt);
       msgs.scrollTop = msgs.scrollHeight;
     }, 1200);
   },
 
+  // ===== NEW MESSAGE BUTTON =====
+  initNewMessage() {
+    document.getElementById('btn-new-msg').addEventListener('click', () => {
+      const toast = document.createElement('div');
+      toast.className = 'new-msg-toast';
+      toast.textContent = '✏️ New conversation';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    });
+  },
+
   // ===== NOTIFICATIONS =====
   initNotifications() {
     const notifications = [
-      {type:'like',user:'sophia_art',initial:'S',text:'<strong>sophia_art</strong> a aimé ta vidéo',time:'2m',unread:true},
-      {type:'follow',user:'new.user42',initial:'N',text:'<strong>new.user42</strong> a commencé à te suivre',time:'5m',unread:true},
-      {type:'comment',user:'alex.dev',initial:'A',text:'<strong>alex.dev</strong> a commenté: "Incroyable le design!"',time:'15m',unread:true},
-      {type:'like',user:'luna.creates',initial:'L',text:'<strong>luna.creates</strong> a aimé ta vidéo',time:'30m',unread:true},
-      {type:'mention',user:'jay_music',initial:'J',text:'<strong>jay_music</strong> t\'a mentionné dans un commentaire',time:'1h',unread:true},
-      {type:'follow',user:'design.daily',initial:'D',text:'<strong>design.daily</strong> a commencé à te suivre',time:'2h',unread:false},
-      {type:'comment',user:'marcox',initial:'M',text:'<strong>marcox</strong> a commenté: "Top! 🔥"',time:'3h',unread:false},
-      {type:'like',user:'emma.vibes',initial:'E',text:'<strong>emma.vibes</strong> et 12 autres ont aimé ta vidéo',time:'5h',unread:false},
-      {type:'follow',user:'neon.dreams',initial:'N',text:'<strong>neon.dreams</strong> a commencé à te suivre',time:'8h',unread:false},
-      {type:'comment',user:'cook.master',initial:'K',text:'<strong>cook.master</strong> a commenté: "Recette? 🍜"',time:'12h',unread:false},
-      {type:'mention',user:'tech.wizard',initial:'T',text:'<strong>tech.wizard</strong> t\'a mentionné dans une vidéo',time:'1j',unread:false},
-      {type:'like',user:'creative.hub',initial:'C',text:'<strong>creative.hub</strong> a aimé 3 de tes vidéos',time:'1j',unread:false},
-      {type:'follow',user:'artsy.life',initial:'A',text:'<strong>artsy.life</strong> que tu connais peut-être a commencé à te suivre',time:'2j',unread:false},
-      {type:'like',user:'photography',initial:'P',text:'<strong>photography</strong> a aimé ta vidéo',time:'2j',unread:false},
-      {type:'comment',user:'travel.bug',initial:'T',text:'<strong>travel.bug</strong> a commenté: "Où est-ce? 😍"',time:'3j',unread:false},
+      {type:'like',user:'sophia_art',initial:'S',text:'<strong>sophia_art</strong> liked your video',time:'2m',unread:true},
+      {type:'follow',user:'new.user42',initial:'N',text:'<strong>new.user42</strong> started following you',time:'5m',unread:true},
+      {type:'comment',user:'alex.dev',initial:'A',text:'<strong>alex.dev</strong> commented: "Amazing design!"',time:'15m',unread:true},
+      {type:'like',user:'luna.creates',initial:'L',text:'<strong>luna.creates</strong> liked your video',time:'30m',unread:true},
+      {type:'mention',user:'jay_music',initial:'J',text:'<strong>jay_music</strong> mentioned you in a comment',time:'1h',unread:true},
+      {type:'follow',user:'design.daily',initial:'D',text:'<strong>design.daily</strong> started following you',time:'2h',unread:false},
+      {type:'comment',user:'marcox',initial:'M',text:'<strong>marcox</strong> commented: "Top! 🔥"',time:'3h',unread:false},
+      {type:'like',user:'emma.vibes',initial:'E',text:'<strong>emma.vibes</strong> and 12 others liked your video',time:'5h',unread:false},
+      {type:'follow',user:'neon.dreams',initial:'N',text:'<strong>neon.dreams</strong> started following you',time:'8h',unread:false},
+      {type:'comment',user:'cook.master',initial:'K',text:'<strong>cook.master</strong> commented: "Recipe? 🍜"',time:'12h',unread:false},
+      {type:'mention',user:'tech.wizard',initial:'T',text:'<strong>tech.wizard</strong> mentioned you in a video',time:'1d',unread:false},
+      {type:'like',user:'creative.hub',initial:'C',text:'<strong>creative.hub</strong> liked 3 of your videos',time:'1d',unread:false},
+      {type:'follow',user:'artsy.life',initial:'A',text:'<strong>artsy.life</strong> who you might know started following you',time:'2d',unread:false},
+      {type:'like',user:'photography',initial:'P',text:'<strong>photography</strong> liked your video',time:'2d',unread:false},
+      {type:'comment',user:'travel.bug',initial:'T',text:'<strong>travel.bug</strong> commented: "Where is this? 😍"',time:'3d',unread:false},
     ];
 
     const container = document.getElementById('notifications-container');
-    container.innerHTML = '<div class="notification-section-title">Nouveau</div>';
+    container.innerHTML = '<div class="notification-section-title">New</div>';
     
     const typeIcons = {
       like: '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',
@@ -347,7 +354,7 @@ const App = {
     let addedOlder = false;
     notifications.forEach(n => {
       if (!n.unread && !addedOlder) {
-        container.innerHTML += '<div class="notification-section-title">Plus ancien</div>';
+        container.innerHTML += '<div class="notification-section-title">Earlier</div>';
         addedOlder = true;
       }
       const item = document.createElement('div');
@@ -407,6 +414,20 @@ const App = {
     });
   },
 
+  // ===== PROFILE BACK =====
+  initProfileBack() {
+    document.getElementById('btn-profile-back').addEventListener('click', () => {
+      this.navigate('home');
+    });
+  },
+
+  // ===== PROFILE SHARE =====
+  initProfileShare() {
+    document.getElementById('btn-profile-share').addEventListener('click', () => {
+      this.openShareSheet();
+    });
+  },
+
   // ===== EDIT PROFILE =====
   initEditProfile() {
     document.getElementById('btn-edit-profile').addEventListener('click', () => {
@@ -416,7 +437,6 @@ const App = {
       document.getElementById('edit-profile-overlay').classList.remove('open');
     });
     document.getElementById('edit-save').addEventListener('click', () => {
-      // Update profile with edited values
       const username = document.getElementById('edit-username').value;
       const displayname = document.getElementById('edit-displayname').value;
       const bio = document.getElementById('edit-bio').value;
@@ -475,7 +495,6 @@ const App = {
     document.getElementById('settings-overlay').addEventListener('click', e => {
       if(e.target === e.currentTarget) e.currentTarget.classList.remove('open');
     });
-    // All toggles
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('click', function() {
         this.classList.toggle('active');
@@ -491,20 +510,20 @@ const App = {
         content: `
           <div class="settings-card">
             <div class="settings-item"><span>Likes</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Commentaires</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Nouveaux abonnés</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Comments</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>New followers</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
             <div class="settings-item"><span>Mentions</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Messages directs</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Vidéos en direct</span><div class="toggle"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Rappels</span><div class="toggle"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Direct messages</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Live videos</span><div class="toggle"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Reminders</span><div class="toggle"><div class="toggle-knob"></div></div></div>
           </div>`
       },
       language: {
-        title: 'Langue',
+        title: 'Language',
         content: `
           <div class="settings-card">
-            <div class="settings-item"><span>Français</span><span style="color:var(--accent)">✓</span></div>
-            <div class="settings-item"><span>English</span></div>
+            <div class="settings-item"><span>English</span><span style="color:var(--accent)">✓</span></div>
+            <div class="settings-item"><span>Français</span></div>
             <div class="settings-item"><span>Español</span></div>
             <div class="settings-item"><span>Deutsch</span></div>
             <div class="settings-item"><span>日本語</span></div>
@@ -514,37 +533,37 @@ const App = {
           </div>`
       },
       privacy: {
-        title: 'Confidentialité',
+        title: 'Privacy',
         content: `
           <div class="settings-card">
-            <div class="settings-item"><span>Compte privé</span><div class="toggle"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Qui peut m'envoyer des messages</span><span class="settings-value">Tout le monde</span></div>
-            <div class="settings-item"><span>Qui peut voir mes likes</span><span class="settings-value">Moi uniquement</span></div>
-            <div class="settings-item"><span>Permettre les duos</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Permettre le stitch</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Permettre les téléchargements</span><div class="toggle"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Private account</span><div class="toggle"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Who can message me</span><span class="settings-value">Everyone</span></div>
+            <div class="settings-item"><span>Who can see my likes</span><span class="settings-value">Only me</span></div>
+            <div class="settings-item"><span>Allow duets</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Allow stitch</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Allow downloads</span><div class="toggle"><div class="toggle-knob"></div></div></div>
           </div>`
       },
       security: {
-        title: 'Sécurité',
+        title: 'Security',
         content: `
           <div class="settings-card">
-            <div class="settings-item"><span>Vérification en 2 étapes</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
-            <div class="settings-item"><span>Appareils connectés</span><span class="settings-value">2</span></div>
-            <div class="settings-item"><span>Changer le mot de passe</span><svg class="settings-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="settings-item"><span>2-step verification</span><div class="toggle active"><div class="toggle-knob"></div></div></div>
+            <div class="settings-item"><span>Connected devices</span><span class="settings-value">2</span></div>
+            <div class="settings-item"><span>Change password</span><svg class="settings-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
             <div class="settings-item"><span>Face ID / Touch ID</span><div class="toggle"><div class="toggle-knob"></div></div></div>
           </div>`
       },
       about: {
-        title: 'À propos',
+        title: 'About',
         content: `
           <div style="text-align:center;padding:40px 20px;">
             <div style="font-size:48px;margin-bottom:16px;">✦</div>
-            <h2 style="font-size:24px;font-weight:800;margin-bottom:8px;">TokStudio</h2>
-            <p style="color:var(--text-3);font-size:14px;margin-bottom:24px;">Version 1.0.0</p>
+            <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">TokStudio</h2>
+            <p style="color:var(--text-3);font-size:13px;margin-bottom:24px;">Version 1.0.0</p>
             <p style="color:var(--text-2);font-size:13px;line-height:1.6;">
-              TokStudio est la plateforme de création vidéo de nouvelle génération. 
-              Créez, partagez et découvrez du contenu incroyable.
+              TokStudio is the next-generation video creation platform. 
+              Create, share and discover incredible content.
             </p>
           </div>`
       }
@@ -558,16 +577,11 @@ const App = {
         document.getElementById('sub-settings-title').textContent = sub.title;
         document.getElementById('sub-settings-content').innerHTML = sub.content;
         document.getElementById('settings-sub-screen').classList.add('open');
-        // Init toggles in sub-screen
         document.querySelectorAll('#sub-settings-content .toggle').forEach(t => {
           t.addEventListener('click', function() { this.classList.toggle('active'); });
         });
-        // Init language selection
         document.querySelectorAll('#sub-settings-content .settings-item').forEach(langItem => {
           langItem.addEventListener('click', () => {
-            const checkmark = langItem.querySelector('span:last-child');
-            if (checkmark && checkmark.textContent === '✓') return;
-            // Language visual feedback
             langItem.style.background = 'var(--glass)';
             setTimeout(() => langItem.style.background = '', 300);
           });
@@ -606,9 +620,9 @@ const App = {
       item.innerHTML = `
         <div class="comment-avatar">M</div>
         <div class="comment-body">
-          <span class="comment-user">moi</span>
+          <span class="comment-user">me</span>
           <p class="comment-text">${text}</p>
-          <div class="comment-meta"><span>maintenant</span><button>Répondre</button></div>
+          <div class="comment-meta"><span>now</span><button>Reply</button></div>
         </div>
         <div class="comment-like"><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button><span>0</span></div>`;
       list.insertBefore(item, list.firstChild);
@@ -625,9 +639,9 @@ const App = {
     });
     document.getElementById('share-copy-link').addEventListener('click', () => {
       const btn = document.getElementById('share-copy-link');
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copié!';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
       setTimeout(() => {
-        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copier le lien';
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy link';
       }, 2000);
     });
 
@@ -640,7 +654,7 @@ const App = {
       {icon:'💌',label:'Message',bg:'#34C759'},
       {icon:'📧',label:'Email',bg:'#8B5CF6'},
       {icon:'📱',label:'Snapchat',bg:'#FFFC00'},
-      {icon:'🔗',label:'Autre',bg:'var(--surface-3)'},
+      {icon:'🔗',label:'Other',bg:'var(--surface-3)'},
     ];
     const shareGrid = document.getElementById('share-grid');
     shareItems.forEach(s => {
@@ -677,7 +691,7 @@ const App = {
 
   openStoryViewer(story, idx) {
     const storyContents = [
-      {bg:'linear-gradient(135deg,#3a1a4a,#1a0a3a)',text:'Nouveau post bientôt! 🔥'},
+      {bg:'linear-gradient(135deg,#3a1a4a,#1a0a3a)',text:'New post coming soon! 🔥'},
       {bg:'linear-gradient(135deg,#0a3a2a,#1a4a3a)',text:'Studio session 🎵'},
       {bg:'linear-gradient(135deg,#3a2a0a,#4a3a1a)',text:'Golden hour vibes ✨'},
     ];
@@ -697,7 +711,6 @@ const App = {
     el.style.background = content.bg;
     el.textContent = content.text;
 
-    // Progress bar
     const bar = document.getElementById('story-progress-bar');
     bar.innerHTML = '';
     contents.forEach((_, i) => {
@@ -740,31 +753,31 @@ const App = {
   openCommentsSheet(videoData) {
     const sheet = document.getElementById('comments-sheet');
     const list = document.getElementById('comments-list');
-    document.getElementById('comments-count').textContent = `${videoData.comments} commentaires`;
+    document.getElementById('comments-count').textContent = `${videoData.comments} comments`;
     
     const mockComments = [
-      {user:'sophia_art',initial:'S',text:'Omg trop beau! 😍😍😍',likes:234,time:'2h'},
-      {user:'alex.dev',initial:'A',text:'Le niveau monte 🔥',likes:89,time:'3h'},
-      {user:'luna.creates',initial:'L',text:'Collab quand? 👀',likes:156,time:'4h'},
-      {user:'marcox',initial:'M',text:'Premier! 🥇',likes:12,time:'5h'},
-      {user:'design.daily',initial:'D',text:'Les couleurs sont incroyables, c\'est tourné où?',likes:67,time:'5h'},
-      {user:'jay_music',initial:'J',text:'Le son est parfait 🎵',likes:45,time:'6h'},
-      {user:'emma.vibes',initial:'E',text:'Obsédée par cette vidéo 💫',likes:198,time:'7h'},
-      {user:'neon.dreams',initial:'N',text:'Quality content comme toujours 🌟',likes:78,time:'8h'},
-      {user:'cook.master',initial:'K',text:'J\'adore l\'ambiance!',likes:23,time:'9h'},
-      {user:'tech.wizard',initial:'T',text:'Comment tu fais pour l\'editing? 🤔',likes:34,time:'10h'},
-      {user:'creative.hub',initial:'C',text:'Ça donne envie d\'y aller 😭',likes:112,time:'11h'},
-      {user:'photo.life',initial:'P',text:'La composition est parfaite 📸',likes:56,time:'12h'},
-      {user:'art.zone',initial:'A',text:'Magnifique! 🎨',likes:89,time:'13h'},
+      {user:'sophia_art',initial:'S',text:'Omg so beautiful! 😍😍😍',likes:234,time:'2h'},
+      {user:'alex.dev',initial:'A',text:'The level is rising 🔥',likes:89,time:'3h'},
+      {user:'luna.creates',initial:'L',text:'Collab when? 👀',likes:156,time:'4h'},
+      {user:'marcox',initial:'M',text:'First! 🥇',likes:12,time:'5h'},
+      {user:'design.daily',initial:'D',text:'The colors are incredible, where was this shot?',likes:67,time:'5h'},
+      {user:'jay_music',initial:'J',text:'The sound is perfect 🎵',likes:45,time:'6h'},
+      {user:'emma.vibes',initial:'E',text:'Obsessed with this video 💫',likes:198,time:'7h'},
+      {user:'neon.dreams',initial:'N',text:'Quality content as always 🌟',likes:78,time:'8h'},
+      {user:'cook.master',initial:'K',text:'I love the vibe!',likes:23,time:'9h'},
+      {user:'tech.wizard',initial:'T',text:'How do you do the editing? 🤔',likes:34,time:'10h'},
+      {user:'creative.hub',initial:'C',text:'Makes me want to go there 😭',likes:112,time:'11h'},
+      {user:'photo.life',initial:'P',text:'The composition is perfect 📸',likes:56,time:'12h'},
+      {user:'art.zone',initial:'A',text:'Stunning! 🎨',likes:89,time:'13h'},
       {user:'vibes.only',initial:'V',text:'Aesthetic goals fr fr',likes:167,time:'14h'},
-      {user:'daily.inspo',initial:'D',text:'Je sauvegarde immédiatement 🔖',likes:45,time:'15h'},
-      {user:'mood.board',initial:'M',text:'L\'énergie de cette vidéo 💥',likes:78,time:'16h'},
+      {user:'daily.inspo',initial:'D',text:'Saving this immediately 🔖',likes:45,time:'15h'},
+      {user:'mood.board',initial:'M',text:'The energy of this video 💥',likes:78,time:'16h'},
       {user:'style.zone',initial:'S',text:'Outfit check??? 👀',likes:34,time:'17h'},
-      {user:'chill.vibes',initial:'C',text:'Trop relax j\'aime bien ☁️',likes:23,time:'18h'},
-      {user:'night.owl',initial:'N',text:'Je regarde ça à 3h du mat et je regrette rien 😂',likes:234,time:'19h'},
-      {user:'sunrise.co',initial:'S',text:'On veut une partie 2! 🙏',likes:145,time:'20h'},
-      {user:'dream.team',initial:'D',text:'Le talent est RÉEL',likes:67,time:'21h'},
-      {user:'pixel.art',initial:'P',text:'Chaque frame est un tableau 🖼️',likes:89,time:'1j'},
+      {user:'chill.vibes',initial:'C',text:'So relaxing I love it ☁️',likes:23,time:'18h'},
+      {user:'night.owl',initial:'N',text:'Watching this at 3am and no regrets 😂',likes:234,time:'19h'},
+      {user:'sunrise.co',initial:'S',text:'We need a part 2! 🙏',likes:145,time:'20h'},
+      {user:'dream.team',initial:'D',text:'The talent is REAL',likes:67,time:'21h'},
+      {user:'pixel.art',initial:'P',text:'Every frame is a painting 🖼️',likes:89,time:'1d'},
     ];
 
     list.innerHTML = '';
@@ -776,13 +789,12 @@ const App = {
         <div class="comment-body">
           <span class="comment-user">@${c.user}</span>
           <p class="comment-text">${c.text}</p>
-          <div class="comment-meta"><span>${c.time}</span><button>Répondre</button></div>
+          <div class="comment-meta"><span>${c.time}</span><button>Reply</button></div>
         </div>
         <div class="comment-like">
           <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
           <span>${c.likes}</span>
         </div>`;
-      // Comment like toggle
       const likeBtn = item.querySelector('.comment-like button');
       likeBtn.addEventListener('click', () => {
         likeBtn.classList.toggle('liked');

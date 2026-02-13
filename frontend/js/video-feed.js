@@ -1,18 +1,18 @@
 /* ===== Video Feed ===== */
 const VideoFeed = {
   videos: [
-    {id:1,user:'Laurehvk',initial:'L',desc:'Journée incroyable à Paris 🗼✨ #paris #vibes #aesthetic',music:'Save the world - Obama',likes:'9.3K',comments:'1.2K',shares:'231',gradient:'linear-gradient(135deg, #0a3a2a 0%, #1a5a3a 30%, #2a1a3a 70%, #3a0a2a 100%)'},
-    {id:2,user:'sophia_art',initial:'S',desc:'Peinture en live 🎨 technique aquarelle pour débutants #art #painting',music:'Lofi Dreams - ChillBeats',likes:'42.1K',comments:'1.2K',shares:'892',gradient:'linear-gradient(135deg, #2a0a3a 0%, #3a1a4a 50%, #1a2a3a 100%)'},
-    {id:3,user:'alex.dev',initial:'A',desc:'J\'ai codé cette app en 48h 🚀 Qu\'est-ce que vous en pensez? #coding #dev',music:'Midnight City - M83',likes:'18.7K',comments:'567',shares:'2.1K',gradient:'linear-gradient(135deg, #0a1a3a 0%, #1a2a4a 50%, #0a3a3a 100%)'},
-    {id:4,user:'luna.creates',initial:'L',desc:'POV: Tu découvres un café caché à Tokyo 🗼☕ #tokyo #travel',music:'Sakura - Japanese Lofi',likes:'89.3K',comments:'3.4K',shares:'12.4K',gradient:'linear-gradient(135deg, #3a1a2a 0%, #4a0a3a 40%, #2a0a1a 100%)'},
-    {id:5,user:'marcox',initial:'M',desc:'Ce coucher de soleil était irréel 🌅 #sunset #nature',music:'Golden Hour - JVKE',likes:'156K',comments:'5.6K',shares:'23.1K',gradient:'linear-gradient(135deg, #3a2a0a 0%, #4a3a1a 50%, #2a1a0a 100%)'},
-    {id:6,user:'design.daily',initial:'D',desc:'Process de design UI du début à la fin ✦ #design #ux',music:'Blinding Lights - The Weeknd',likes:'34.5K',comments:'892',shares:'4.3K',gradient:'linear-gradient(135deg, #1a0a3a 0%, #2a1a4a 50%, #3a0a2a 100%)'},
-    {id:7,user:'jay_music',initial:'J',desc:'Beat produit sur mon téléphone 🎵 Full track bientôt',music:'Original Sound - jay_music',likes:'67.8K',comments:'2.1K',shares:'8.9K',gradient:'linear-gradient(135deg, #0a2a2a 0%, #1a3a3a 50%, #0a1a2a 100%)'},
-    {id:8,user:'emma.vibes',initial:'E',desc:'Outfit check 💫 Tout thrifté pour moins de 30€',music:'Levitating - Dua Lipa',likes:'23.4K',comments:'743',shares:'1.8K',gradient:'linear-gradient(135deg, #3a0a1a 0%, #4a1a2a 50%, #2a0a1a 100%)'},
-    {id:9,user:'tech.wizard',initial:'T',desc:'L\'informatique quantique en 60 secondes ⚛️ #tech #science',music:'Interstellar Theme - Zimmer',likes:'112K',comments:'8.9K',shares:'34.5K',gradient:'linear-gradient(135deg, #0a1a2a 0%, #1a2a3a 50%, #0a2a1a 100%)'},
-    {id:10,user:'neon.dreams',initial:'N',desc:'Ville cyberpunk la nuit 🌃 Shot on iPhone',music:'Synthwave Nights - RetroBeats',likes:'78.9K',comments:'2.8K',shares:'15.3K',gradient:'linear-gradient(135deg, #1a0a2a 0%, #2a0a3a 40%, #0a1a3a 100%)'},
-    {id:11,user:'creative.hub',initial:'C',desc:'Stop motion frame par frame 🎬 #animation #art',music:'Electric Feel - MGMT',likes:'56.7K',comments:'1.5K',shares:'6.7K',gradient:'linear-gradient(135deg, #2a1a0a 0%, #3a2a1a 50%, #1a0a1a 100%)'},
-    {id:12,user:'cook.master',initial:'K',desc:'Le ramen parfait fait maison 🍜 #cuisine #ramen',music:'lo-fi cooking vibes',likes:'91.3K',comments:'4.5K',shares:'18.2K',gradient:'linear-gradient(135deg, #0a2a1a 0%, #1a3a2a 40%, #2a1a2a 100%)'},
+    {id:1,user:'Laurehvk',initial:'L',desc:'Incredible day in Paris 🗼✨ #paris #vibes #aesthetic',music:'Save the world - Obama',likes:'9.3K',comments:'1.2K',shares:'231',gradient:'linear-gradient(135deg, #0a3a2a 0%, #1a5a3a 30%, #2a1a3a 70%, #3a0a2a 100%)'},
+    {id:2,user:'sophia_art',initial:'S',desc:'Live painting 🎨 watercolor technique for beginners #art #painting',music:'Lofi Dreams - ChillBeats',likes:'42.1K',comments:'1.2K',shares:'892',gradient:'linear-gradient(135deg, #2a0a3a 0%, #3a1a4a 50%, #1a2a3a 100%)'},
+    {id:3,user:'alex.dev',initial:'A',desc:'I coded this app in 48h 🚀 What do you think? #coding #dev',music:'Midnight City - M83',likes:'18.7K',comments:'567',shares:'2.1K',gradient:'linear-gradient(135deg, #0a1a3a 0%, #1a2a4a 50%, #0a3a3a 100%)'},
+    {id:4,user:'luna.creates',initial:'L',desc:'POV: You discover a hidden café in Tokyo 🗼☕ #tokyo #travel',music:'Sakura - Japanese Lofi',likes:'89.3K',comments:'3.4K',shares:'12.4K',gradient:'linear-gradient(135deg, #3a1a2a 0%, #4a0a3a 40%, #2a0a1a 100%)'},
+    {id:5,user:'marcox',initial:'M',desc:'This sunset was unreal 🌅 #sunset #nature',music:'Golden Hour - JVKE',likes:'156K',comments:'5.6K',shares:'23.1K',gradient:'linear-gradient(135deg, #3a2a0a 0%, #4a3a1a 50%, #2a1a0a 100%)'},
+    {id:6,user:'design.daily',initial:'D',desc:'UI design process from start to finish ✦ #design #ux',music:'Blinding Lights - The Weeknd',likes:'34.5K',comments:'892',shares:'4.3K',gradient:'linear-gradient(135deg, #1a0a3a 0%, #2a1a4a 50%, #3a0a2a 100%)'},
+    {id:7,user:'jay_music',initial:'J',desc:'Beat produced on my phone 🎵 Full track coming soon',music:'Original Sound - jay_music',likes:'67.8K',comments:'2.1K',shares:'8.9K',gradient:'linear-gradient(135deg, #0a2a2a 0%, #1a3a3a 50%, #0a1a2a 100%)'},
+    {id:8,user:'emma.vibes',initial:'E',desc:'Outfit check 💫 All thrifted for under $30',music:'Levitating - Dua Lipa',likes:'23.4K',comments:'743',shares:'1.8K',gradient:'linear-gradient(135deg, #3a0a1a 0%, #4a1a2a 50%, #2a0a1a 100%)'},
+    {id:9,user:'tech.wizard',initial:'T',desc:'Quantum computing in 60 seconds ⚛️ #tech #science',music:'Interstellar Theme - Zimmer',likes:'112K',comments:'8.9K',shares:'34.5K',gradient:'linear-gradient(135deg, #0a1a2a 0%, #1a2a3a 50%, #0a2a1a 100%)'},
+    {id:10,user:'neon.dreams',initial:'N',desc:'Cyberpunk city at night 🌃 Shot on iPhone',music:'Synthwave Nights - RetroBeats',likes:'78.9K',comments:'2.8K',shares:'15.3K',gradient:'linear-gradient(135deg, #1a0a2a 0%, #2a0a3a 40%, #0a1a3a 100%)'},
+    {id:11,user:'creative.hub',initial:'C',desc:'Stop motion frame by frame 🎬 #animation #art',music:'Electric Feel - MGMT',likes:'56.7K',comments:'1.5K',shares:'6.7K',gradient:'linear-gradient(135deg, #2a1a0a 0%, #3a2a1a 50%, #1a0a1a 100%)'},
+    {id:12,user:'cook.master',initial:'K',desc:'The perfect homemade ramen 🍜 #cooking #ramen',music:'lo-fi cooking vibes',likes:'91.3K',comments:'4.5K',shares:'18.2K',gradient:'linear-gradient(135deg, #0a2a1a 0%, #1a3a2a 40%, #2a1a2a 100%)'},
   ],
 
   liked: new Set(),
@@ -26,6 +26,7 @@ const VideoFeed = {
     this.initVideoProgress();
     this.initParallax();
     this.initPullToRefresh();
+    this.initSwipeGestures();
   },
 
   render() {
@@ -71,7 +72,7 @@ const VideoFeed = {
           </button>
           <button class="action-btn${isSaved?' saved':''}" data-action="save" data-id="${v.id}">
             <svg viewBox="0 0 24 24" fill="${isSaved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-            <span class="action-count">Sauv.</span>
+            <span class="action-count">Save</span>
           </button>
           <div class="music-disc">${v.initial}</div>
         </div>`;
@@ -143,7 +144,6 @@ const VideoFeed = {
       this.liked.add(id);
       btn.classList.add('liked','burst');
       svg.setAttribute('fill','currentColor');
-      // Particle burst
       this.createParticles(btn);
       setTimeout(() => btn.classList.remove('burst'), 400);
     }
@@ -204,7 +204,115 @@ const VideoFeed = {
     });
   },
 
-  // Video progress bar — activate on visible slide
+  // ===== SWIPE GESTURES =====
+  initSwipeGestures() {
+    const feed = document.getElementById('video-feed');
+    const heartFeedback = document.getElementById('swipe-feedback-heart');
+    const commentFeedback = document.getElementById('swipe-feedback-comment');
+    let startX = 0, startY = 0, swiping = false, direction = null;
+    const threshold = 50;
+
+    feed.addEventListener('touchstart', e => {
+      if (e.target.closest('.action-btn,.follow-badge')) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      swiping = true;
+      direction = null;
+    }, { passive: true });
+
+    feed.addEventListener('touchmove', e => {
+      if (!swiping) return;
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+      
+      // Only track horizontal swipes (ignore vertical scroll)
+      if (direction === null && (Math.abs(dx) > 15 || Math.abs(dy) > 15)) {
+        direction = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+      }
+      
+      if (direction === 'horizontal') {
+        // Show visual feedback
+        if (dx > 30) {
+          heartFeedback.classList.add('visible');
+          commentFeedback.classList.remove('visible');
+          heartFeedback.style.opacity = Math.min((dx - 30) / 70, 0.7);
+        } else if (dx < -30) {
+          commentFeedback.classList.add('visible');
+          heartFeedback.classList.remove('visible');
+          commentFeedback.style.opacity = Math.min((-dx - 30) / 70, 0.7);
+        } else {
+          heartFeedback.classList.remove('visible');
+          commentFeedback.classList.remove('visible');
+        }
+        
+        // Slight opacity on current slide
+        const slide = e.target.closest('.video-slide');
+        if (slide) {
+          slide.style.opacity = 1 - Math.abs(dx) / 600;
+        }
+      }
+      
+      if (direction === 'vertical' && dy > 30) {
+        // Show comment feedback for swipe down
+        commentFeedback.classList.add('visible');
+        commentFeedback.style.opacity = Math.min((dy - 30) / 70, 0.7);
+      }
+    }, { passive: true });
+
+    feed.addEventListener('touchend', e => {
+      if (!swiping) return;
+      swiping = false;
+      
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      
+      // Reset visual feedback
+      heartFeedback.classList.remove('visible');
+      commentFeedback.classList.remove('visible');
+      heartFeedback.style.opacity = '';
+      commentFeedback.style.opacity = '';
+      
+      // Reset slide opacity
+      const slide = e.target.closest('.video-slide');
+      if (slide) slide.style.opacity = '';
+      
+      if (direction === 'horizontal') {
+        if (dx > threshold) {
+          // Swipe RIGHT → Like
+          if (slide) {
+            const id = +slide.dataset.id;
+            const btn = slide.querySelector('[data-action="like"]');
+            if (btn && !this.liked.has(id)) {
+              this.toggleLike(id, btn);
+              // Show heart pop animation
+              heartFeedback.classList.add('pop');
+              setTimeout(() => heartFeedback.classList.remove('pop'), 800);
+            }
+          }
+        } else if (dx < -threshold) {
+          // Swipe LEFT → Comments
+          if (slide) {
+            const videoId = +slide.dataset.id;
+            const video = this.videos.find(v => v.id === videoId) || this.videos[0];
+            App.openCommentsSheet(video);
+          }
+        }
+      }
+      
+      if (direction === 'vertical' && dy > threshold) {
+        // Swipe DOWN → Comments
+        if (slide) {
+          const videoId = +slide.dataset.id;
+          const video = this.videos.find(v => v.id === videoId) || this.videos[0];
+          App.openCommentsSheet(video);
+        }
+      }
+      
+      direction = null;
+    });
+  },
+
+  // Video progress bar
   initVideoProgress() {
     const feed = document.getElementById('video-feed');
     let currentActive = null;
