@@ -171,6 +171,7 @@ const App = {
     // Chat overlay
     document.getElementById('btn-back-chat').addEventListener('click', () => {
       document.getElementById('chat-overlay').classList.remove('open');
+      document.getElementById('bottom-nav').style.display = '';
     });
     document.getElementById('btn-send-msg').addEventListener('click', () => this.sendMessage());
     document.getElementById('chat-input-field').addEventListener('keydown', e => {
@@ -270,6 +271,7 @@ const App = {
       msgs.appendChild(time);
     });
     overlay.classList.add('open');
+    document.getElementById('bottom-nav').style.display = 'none';
     msgs.scrollTop = msgs.scrollHeight;
   },
 
