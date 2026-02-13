@@ -252,11 +252,7 @@ const VideoFeed = {
         }
       }
       
-      if (direction === 'vertical' && dy > 30) {
-        // Show comment feedback for swipe down
-        commentFeedback.classList.add('visible');
-        commentFeedback.style.opacity = Math.min((dy - 30) / 70, 0.7);
-      }
+      // Vertical swipes reserved for scroll — no gesture override
     }, { passive: true });
 
     feed.addEventListener('touchend', e => {
@@ -296,15 +292,6 @@ const VideoFeed = {
             const video = this.videos.find(v => v.id === videoId) || this.videos[0];
             App.openCommentsSheet(video);
           }
-        }
-      }
-      
-      if (direction === 'vertical' && dy > threshold) {
-        // Swipe DOWN → Comments
-        if (slide) {
-          const videoId = +slide.dataset.id;
-          const video = this.videos.find(v => v.id === videoId) || this.videos[0];
-          App.openCommentsSheet(video);
         }
       }
       
