@@ -25,7 +25,7 @@ const VideoFeed = {
     this.initDoubleTap();
     this.initVideoProgress();
     this.initParallax();
-    this.initPullToRefresh();
+    this.initOverscrollEffect();
     this.initSwipeGestures();
   },
 
@@ -366,14 +366,13 @@ const VideoFeed = {
     });
   },
 
-  // Pull to refresh
-  initPullToRefresh() {
+  // Overscroll effect (rounded corners + scale on pull at top)
+  initOverscrollEffect() {
     const feed = document.getElementById('video-feed');
-    const ptr = document.getElementById('pull-to-refresh');
     let startY = 0, pulling = false;
 
     feed.addEventListener('touchstart', e => {
-      if (feed.scrollTop <= 0) {
+      if (feed.scrollTop === 0) {
         startY = e.touches[0].clientY;
         pulling = true;
       }
@@ -382,19 +381,24 @@ const VideoFeed = {
     feed.addEventListener('touchmove', e => {
       if (!pulling) return;
       const dy = e.touches[0].clientY - startY;
-      if (dy > 20 && dy < 120) {
-        ptr.classList.add('visible');
+      if (dy > 0 && feed.scrollTop === 0) {
+        const progress = Math.min(dy / 200, 1);
+        const firstSlide = feed.querySelector('.video-slide');
+        if (firstSlide) {
+          firstSlide.style.borderRadius = `${progress * 20}px`;
+          firstSlide.style.transform = `scale(${1 - progress * 0.05})`;
+          firstSlide.style.transition = 'none';
+        }
       }
     }, { passive: true });
 
     feed.addEventListener('touchend', () => {
-      if (!pulling) return;
       pulling = false;
-      if (ptr.classList.contains('visible')) {
-        ptr.classList.add('refreshing');
-        setTimeout(() => {
-          ptr.classList.remove('visible', 'refreshing');
-        }, 1500);
+      const firstSlide = feed.querySelector('.video-slide');
+      if (firstSlide) {
+        firstSlide.style.transition = 'all 0.3s cubic-bezier(0.2, 0, 0, 1)';
+        firstSlide.style.borderRadius = '0';
+        firstSlide.style.transform = 'scale(1)';
       }
     });
   }
