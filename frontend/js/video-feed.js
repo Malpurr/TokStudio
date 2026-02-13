@@ -359,7 +359,7 @@ const VideoFeed = {
     let startY = 0, pulling = false;
 
     feed.addEventListener('touchstart', e => {
-      if (feed.scrollTop === 0) {
+      if (feed.scrollTop <= 2) {
         startY = e.touches[0].clientY;
         pulling = true;
       }
@@ -368,24 +368,33 @@ const VideoFeed = {
     feed.addEventListener('touchmove', e => {
       if (!pulling) return;
       const dy = e.touches[0].clientY - startY;
-      if (dy > 0 && feed.scrollTop === 0) {
-        const progress = Math.min(dy / 200, 1);
-        const firstSlide = feed.querySelector('.video-slide');
-        if (firstSlide) {
-          firstSlide.style.borderRadius = `${progress * 20}px`;
-          firstSlide.style.transform = `scale(${1 - progress * 0.05})`;
-          firstSlide.style.transition = 'none';
+      if (dy > 0 && feed.scrollTop <= 2) {
+        e.preventDefault && e.preventDefault();
+        const progress = Math.min(dy / 150, 1);
+        const currentSlide = feed.querySelector('.video-slide');
+        if (currentSlide) {
+          const r = Math.round(progress * 32);
+          const s = 1 - progress * 0.08;
+          const ty = progress * 20;
+          currentSlide.style.borderRadius = r + 'px';
+          currentSlide.style.transform = `scale(${s}) translateY(${ty}px)`;
+          currentSlide.style.transition = 'none';
+          currentSlide.style.overflow = 'hidden';
         }
+      } else if (dy < 0) {
+        pulling = false;
       }
-    }, { passive: true });
+    }, { passive: false });
 
     feed.addEventListener('touchend', () => {
+      if (!pulling) return;
       pulling = false;
-      const firstSlide = feed.querySelector('.video-slide');
-      if (firstSlide) {
-        firstSlide.style.transition = 'all 0.3s cubic-bezier(0.2, 0, 0, 1)';
-        firstSlide.style.borderRadius = '0';
-        firstSlide.style.transform = 'scale(1)';
+      const currentSlide = feed.querySelector('.video-slide');
+      if (currentSlide) {
+        currentSlide.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        currentSlide.style.borderRadius = '0';
+        currentSlide.style.transform = 'scale(1) translateY(0)';
+        setTimeout(() => { currentSlide.style.overflow = ''; }, 400);
       }
     });
   }
